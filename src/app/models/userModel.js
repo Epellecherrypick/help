@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import InvitationModel from "@/app/models/InvitationModel";
 import User from "@/app/models/userModel";
 import connectToDb from "@/lib/connection";
@@ -5,7 +6,29 @@ import { generateInvitationCode } from "@/lib/generateInviteCode";
 import { sendMail } from "@/lib/send-mail";
 import bcrypt from "bcryptjs";
 
+  const userSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["buyer", "seller", "agent", "user"],
+      default: "user",
+    },
+  });
+
 export const POST = async (req) => {
+
   try {
     // Get data from request body
     const { fullname, email, password } = await req.json();
@@ -90,4 +113,4 @@ export const POST = async (req) => {
   }
 };
 
-export default mongoose.models.user || mongoose.model("User", UserSchema);
+export default mongoose.models.user || mongoose.model("User", userSchema);

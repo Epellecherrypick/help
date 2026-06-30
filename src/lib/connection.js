@@ -5,7 +5,7 @@ export default async function connectToDb() {
     // logic to connect to the database
 
     try {
-        const db = await mongoose.connect(process.env.MONGO_URL)
+        const db = await mongoose.connect(process.env.MONGODB_URL)
         if (db) {
             console.log('Connected to the database successfully');
             return db;

@@ -29,10 +29,10 @@ export const POST = async (req) => {
         // compare the provided password with the stored hashed password
         const isPasswordValid = bcrypt.compareSync(password, user.password)
         if (!isPasswordValid) {
-            return Response.json({ 
+            return Response.json({
                 message: "Invalid email or password",
                 error: true
-            }, 
+            },
                 { status: 401 })
         }
 
@@ -48,12 +48,12 @@ export const POST = async (req) => {
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
             // or use env
-            
+
         )
 
         return Response.json({
-            message: "Sign-in successful", 
-            error:false,
+            message: "Sign-in successful",
+            error: false,
             data: {
                 token,
                 userRole: user.userRole
@@ -64,7 +64,7 @@ export const POST = async (req) => {
     }
     catch (error) {
         console.error("SIGN_IN API ERROR:", error)
-        if(error.response){
+        if (error.response) {
             return Response.json({ message: error.response.data.message }, { status: error.response.status })
         }
         return Response.json({ message: "Internal Server Error" }, { status: 500 })
