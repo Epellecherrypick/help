@@ -17,9 +17,10 @@ export default function SignUp() {
   const [selectedRole, setSelectedRole] = useState('')
   const [inputData, setInputData] = useState({
 
-    fullname: "",
+    name: "",
     email: "",
     password: "",
+    role: "",
 
   })
 
@@ -27,6 +28,7 @@ export default function SignUp() {
 
   const handleselectedRole = (role) => {
     setSelectedRole(role)
+    setInputData({ ...inputData, role: role })
   }
   // function for handleOnChange
   const handleOnChange = (e) => {
@@ -41,8 +43,8 @@ export default function SignUp() {
 
     
 
-    if (!inputData.fullname) {
-      newErrors.fullname = "please fill in Full name"
+    if (!inputData.name) {
+      newErrors.name = "please fill in Full name"
     }
 
     if (!inputData.email) {
@@ -68,33 +70,20 @@ export default function SignUp() {
 
         const res = await axios.post("/api/sign-up", inputData)
         console.log(res)
-        if (res.status==201) {
-
-          // /store user email in the local storage
-          // LocalStorage.setItem("email", email);
+        if (res.status === 201) {
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem("pendingEmail", inputData.email)
+          }
 
           setLoading(false)
           router.push('/verify-otp')
         }
+      } catch (error) {
+        setLoading(false);
+        const backendMessage = error.response?.data?.message || error.message || "Something went wrong";
+        setErrors({ general: backendMessage });
+        console.error("Error signing up:", error);
       }
-      
-      catch (error) {
-    setLoading(false);
-    
-    // Safely pull the server message if it exists, otherwise fall back to the raw axios error message
-    const backendMessage = error.response?.data?.message || error.message || "Something went wrong";
-    
-    // Set errors as an object matching your state expectations, or pass a simple string
-    setErrors({ general: backendMessage });
-    
-    console.error("Error signing up:", error);
-  }
-      // catch (error) {
-      //   setLoading(false)
-      //   setErr
-      //   setErrors(error.response.message)
-      //   console.error("Error signing up:", error)
-      // }
     }
     else {
       setErrors(validationErrors)
@@ -110,22 +99,22 @@ export default function SignUp() {
 
           <div className=' w-50 py-10 px-2'>
             <h1 className='text-2xl font-bold text-orange-600'>Join Nestly</h1>
-            <p className='text-sm font-light'>Pick how you'll use Nestly</p>
+            <p className='text-sm font-light text-slate-700'>Pick how you'll use Nestly</p>
           </div>
 
           <div className='w-full px-2 flex justify-between items-center gap-2 py-3'>
 
-            <div onClick={() => handleselectedRole('buyer')} className='w-25 border border-black/25 pb-2 cursor-pointer rounded-2xl hover:bg-orange-100 hover:text-orange-600'>
+            <div onClick={() => handleselectedRole('buyer')} className='w-25 border border-black/25 pb-2 cursor-pointer rounded-2xl hover:bg-orange-100 hover:text-orange-600 text-slate-800'>
               <span className='text-2xl  flex justify-center items-center pt-2 pb-2 text-orange-600 font-bold'><CiUser /></span>
               <p className='text-center text-xs'>Buyer</p>
             </div>
 
-            <div onClick={() => handleselectedRole('seller')} className='w-25 border border-black/25 pb-2 cursor-pointer rounded-2xl hover:bg-orange-100 hover:text-orange-600'>
+            <div onClick={() => handleselectedRole('seller')} className='w-25 border border-black/25 pb-2 cursor-pointer rounded-2xl hover:bg-orange-100 hover:text-orange-600 text-slate-800'>
               <span className='text-2xl  flex justify-center items-center pt-2 pb-2 text-orange-600 font-bold' ><MdOutlineWarehouse /></span>
               <p className='text-center text-xs'>Seller</p>
             </div>
 
-            <div className='w-25 border border-black/25 pb-2 cursor-pointer rounded-2xl  hover:bg-orange-100 hover:text-orange-600'>
+            <div onClick={() => handleselectedRole('agent')} className='w-25 border border-black/25 pb-2 cursor-pointer rounded-2xl  hover:bg-orange-100 hover:text-orange-600 text-slate-800'>
               <span className='text-2xl  flex justify-center items-center pt-2 pb-2  text-orange-600 font-bold'><HiOutlineInboxStack /></span>
               <p className='text-center text-xs'>Agent</p>
             </div>
@@ -151,22 +140,22 @@ export default function SignUp() {
                 </div>
 
                 <div className='py-4'>
-                  <label className='block px-3 py-2 text-sm'>Full name</label>
-                  <input type="text" name='fullname' placeholder='Ngalaka Gift' onChange={handleOnChange} className='w-full border border-black/25 py-2 px-4 outline-none hover:outline-1 rounded-full  text-sm' />
+                  <label className='block px-3 py-2 text-sm font-medium text-slate-900'>Full name</label>
+                  <input type="text" name='name' placeholder='Ngalaka Gift' onChange={handleOnChange} className='w-full border border-black/25 py-2 px-4 outline-none hover:outline-1 rounded-full text-sm text-slate-900 placeholder:text-slate-500' />
                 </div>
 
-                {errors.fullname && (<p className='text-red-500 font-mono font-semibold text-xs italic'>{errors.fullname}</p>)}
+                {errors.name && (<p className='text-red-500 font-mono font-semibold text-xs italic'>{errors.name}</p>)}
 
                 <div className='py-4'>
-                  <label className='block px-2 py-2 text-sm'>Email</label>
-                  <input type="email" name='email' placeholder='ngalakagift@gmail.com' onChange={handleOnChange} className='w-full border border-black/25 py-2 px-4 outline-none hover:outline-1 rounded-full  text-sm' />
+                  <label className='block px-2 py-2 text-sm font-medium text-slate-900'>Email</label>
+                  <input type="email" name='email' placeholder='ngalakagift@gmail.com' onChange={handleOnChange} className='w-full border border-black/25 py-2 px-4 outline-none hover:outline-1 rounded-full text-sm text-slate-900 placeholder:text-slate-500' />
                 </div>
 
                 {errors.email && (<p className='text-red-500 font-mono font-semibold text-xs italic'>{errors.email}</p>)}
 
                 <div className='py-4'>
-                  <label className='block px-2 py-2 text-sm'>Password</label>
-                  <input type="password" name='password' placeholder='............' onChange={handleOnChange} className='w-full border border-black/25 py-2 px-4 outline-none hover:outline-1 rounded-full  text-sm' />
+                  <label className='block px-2 py-2 text-sm font-medium text-slate-900'>Password</label>
+                  <input type="password" name='password' placeholder='............' onChange={handleOnChange} className='w-full border border-black/25 py-2 px-4 outline-none hover:outline-1 rounded-full text-sm text-slate-900 placeholder:text-slate-500' />
                 </div>
 
                 {errors.password && (<p className='text-red-500 font-mono font-semibold text-xs italic'>{errors.password}</p>)}
@@ -175,15 +164,18 @@ export default function SignUp() {
 
                 {errors.confirmpass && (<p className='text-red-500 font-mono font-semibold text-xs italic'>{errors.confirmpass}</p>)}
                 <div className='w-full flex justify-self-start items-center gap-2 py-4 px-3'>
-                  <Link href="/sign-in" className='italic text-sm'>Already have an account</Link>
+                  <Link href="/signin" className='italic text-sm text-slate-700'>Already have an account</Link>
+                  <button type="button" onClick={() => handleselectedRole('')} className='italic text-sm text-slate-700'>Not a seller?</button>
                 </div>
+
+                {errors.general && (<p className='text-red-500 font-mono font-semibold text-xs italic text-center py-2'>{errors.general}</p>)}
 
                 <div className='w-full py-4 px-4'>
                   <button disabled={loading} type='submit' className={`w-80 ${loading ? 'bg-orange-500 text-black' : 'bg-orange-600'} py-3 text-white cursor-pointer rounded-full`}> {loading ? "loading..." : "create account"} </button>
                 </div>
 
                 <div className='w-70 m-auto'>
-                  <p className='text-sm italic  '>By continuing you agree to our <Link href="/terms" className='text-sm underline'>Terms</Link></p>
+                  <p className='text-sm italic text-slate-700'>By continuing you agree to our <Link href="/terms" className='text-sm underline text-slate-900'>Terms</Link></p>
                 </div>
               </form>
             )

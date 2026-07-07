@@ -25,9 +25,11 @@ export const POST = async (req) => {
 
         invitationUser.otp = otp
         invitationUser.expiresAt = new Date(Date.now() + 10 * 60 * 1000)
-        invitationUser.CreatedAt = Date.now()
+        invitationUser.isExpired = false
+        invitationUser.isUsed = false
+        invitationUser.usedAt = null
         await invitationUser.save()
-        sendMail(email, otp)
+        await sendMail(email, otp)
         return Response.json({ message: "OTP resent successfully" }, { status: 200 })
 
     }
