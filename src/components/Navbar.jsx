@@ -68,6 +68,10 @@ export default function Navbar() {
             Sign in
           </button>
             </Link>
+
+             <Link href="/signup" className='italic text-sm'> <button className="hidden md:block text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">
+            Sign up
+          </button></Link>
           
            <button
             className="md:hidden text-gray-700"

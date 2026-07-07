@@ -7,13 +7,13 @@ import bcrypt from "bcryptjs";
 
 export const POST = async (req) => {
   try {
-    const { fullname, email, password } = await req.json();
+    const { name, email, password } = await req.json();
 
     // Validate input
-    if (!fullname || !email || !password) {
+    if (!name || !email || !password) {
       return Response.json(
         {
-          message: "Missing required fields: fullname, email or password",
+          message: "Missing required fields: name, email or password",
         },
         { status: 400 }
       );
@@ -37,7 +37,7 @@ export const POST = async (req) => {
 
     // Create user
     const newUser = await User.create({
-      fullname, // Make sure your User schema uses fullname
+      name,
       email,
       password: hashedPassword,
     });
